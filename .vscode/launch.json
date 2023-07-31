@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node-terminal",
+        "name": "Debug Current JS File (node)",
+        "request": "launch",
+        "command": "node -- ${fileBasenameNoExtension}",
+        "cwd": "${fileDirname}"
+      },
+      {
+        "type": "node-terminal",
+        "name": "Debug Current TS File (ts-node)",
+        "request": "launch",
+        "command": "node --experimental-specifier-resolution=node --loader ts-node/esm ${fileBasenameNoExtension}",
+        "cwd": "${fileDirname}"
+      },
+      {
+        "type": "node-terminal",
+        "name": "Debug Current Test File (npm run test)",
+        "request": "launch",
+        "command": "npm run test -- ${fileBasenameNoExtension}",
+        "cwd": "${fileDirname}"
+      }
+    ]
+  }

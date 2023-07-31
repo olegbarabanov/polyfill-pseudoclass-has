@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    // "declarationDir": "./dist/lib",
+    "strict": true,
+    "sourceMap": true,
+    "noImplicitOverride": true,
+    "declaration": true,
+    "outDir": "./dist/esm",
+    "lib": ["ESNext", "scripthost", "DOM","DOM.Iterable"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["jest", "node"],
+    "rootDir": "./src/",
+  },
+  "exclude": ["**/*.test.ts", "**/*.mock.ts", "**/__test__", "**/*.spec.ts"]
+}
