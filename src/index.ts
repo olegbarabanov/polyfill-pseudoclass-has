@@ -1,2 +1,2 @@
-export * from "./polyfill";
+export * from "./selector-handler";
 export * from "./install";

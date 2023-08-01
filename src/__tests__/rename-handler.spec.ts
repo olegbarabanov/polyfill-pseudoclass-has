@@ -1,14 +1,18 @@
+
+
 import * as fs from "fs";
-import { Polyfill } from "..";
 import { JSDOM } from "jsdom";
 import * as path from "path";
+import { SelectorHandler } from "..";
 
-const globalHtml = fs.readFileSync(path.resolve(__dirname, "./test.html"), "utf8");
+const globalHtml = fs.readFileSync(
+  path.resolve(__dirname, "./test.html"),
+  "utf8"
+);
 
 const {
   window: { document },
 } = new JSDOM();
-let polyfill = new Polyfill();
 
 document.documentElement.innerHTML = globalHtml;
 
@@ -25,7 +29,8 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
         rootNode.querySelector("main") ?? fail("target element not found");
       if (!targetElement) fail("target element not found");
 
-      const result = polyfill.querySelector("main:has(#link-to-top)", rootNode);
+      const selector = "main:has(#link-to-top)";
+      const result = new SelectorHandler(selector).query(rootNode);
       expect(result).not.toBeNull();
       expect(result).toBe(targetElement);
     });
@@ -34,10 +39,8 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       const targetElement = rootNode.querySelector("main");
       if (!targetElement) fail("target element not found");
 
-      const result = polyfill.querySelector(
-        "main:has(#fake-id, #link-to-top)",
-        rootNode
-      );
+      const selector = "main:has(#fake-id, #link-to-top)";
+      const result = new SelectorHandler(selector).query(rootNode);
       expect(result).not.toBeNull();
       expect(result).toBe(targetElement);
     });
@@ -46,10 +49,8 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       const targetElement = rootNode.querySelector("main");
       if (!targetElement) fail("target element not found");
 
-      const result = polyfill.querySelector(
-        "main:has(#link-to-top):has(#link-to-bottom)",
-        rootNode
-      );
+      const selector = "main:has(#link-to-top):has(#link-to-bottom)";
+      const result = new SelectorHandler(selector).query(rootNode);
       expect(result).not.toBeNull();
       expect(result).toBe(targetElement);
     });
@@ -58,10 +59,8 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       const targetElement = rootNode.querySelector("main");
       if (!targetElement) fail("target element not found");
 
-      const result = polyfill.querySelector(
-        "#container main:has(~footer)",
-        rootNode
-      );
+      const selector = "#container main:has(~footer)";
+      const result = new SelectorHandler(selector).query(rootNode);
       expect(result).not.toBeNull();
       expect(result).toBe(targetElement);
     });
@@ -70,19 +69,16 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       const targetElement = rootNode.querySelector("header[role=banner]");
       if (!targetElement) fail("target element not found");
 
-      const result = polyfill.querySelector(
-        "#container:has(#unavailable-id, #link-to-top):has(#link-to-bottom) header[role=banner]:has(+nav):has(~footer)",
-        rootNode
-      );
+      const selector =
+        "#container:has(#unavailable-id, #link-to-top):has(#link-to-bottom) header[role=banner]:has(+nav):has(~footer)";
+      const result = new SelectorHandler(selector).query(rootNode);
       expect(result).not.toBeNull();
       expect(result).toBe(targetElement);
     });
 
     test(`querySelector() 6 + NODE_TYPE ${rootNode.nodeType}`, async () => {
-      const result = polyfill.querySelector(
-        "main:has(#link-to-top) unavailable-element",
-        rootNode
-      );
+      const selector = "main:has(#link-to-top) unavailable-element";
+      const result = new SelectorHandler(selector).query(rootNode);
       expect(result).toBeNull();
     });
 
@@ -90,7 +86,8 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       const targetElement = rootNode.querySelector("#container");
       if (!targetElement) fail("target element not found");
 
-      const result = polyfill.querySelector("#container:has(~ *)", rootNode);
+      const selector = "#container:has(~ *)";
+      const result = new SelectorHandler(selector).query(rootNode);
       expect(result).not.toBeNull();
       expect(result).toBe(targetElement);
     });
@@ -104,10 +101,8 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       const targetElements = rootNode.querySelectorAll("main header");
       if (targetElements.length === 0) fail("target elements not found");
 
-      const result = polyfill.querySelectorAll(
-        "header:has(+:not(nav))",
-        rootNode
-      );
+      const selector = "header:has(+:not(nav))";
+      const result = new SelectorHandler(selector).queryAll(rootNode);
 
       expect(result).not.toBeNull();
       expect([...result]).toEqual([...targetElements]);
@@ -120,22 +115,22 @@ describe("check matches()", () => {
     const targetElement = rootElementImpl.querySelector("main");
     if (!targetElement) fail("target element not found");
 
-    const result1 = polyfill.matches("main:has(#link-to-top)", targetElement);
+    const selector1 = "main:has(#link-to-top)";
+    const result1 = new SelectorHandler(selector1).matches(targetElement);
     expect(result1).toBeTruthy();
-    const result2 = polyfill.matches(
-      "main:has(#unavailable-id)",
-      targetElement
-    );
+
+    const selector2 = "main:has(#unavailable-id)";
+    const result2 = new SelectorHandler(selector2).matches(targetElement);
     expect(result2).toBeFalsy();
   });
 
   test("top-level element", async () => {
-    const result1 = polyfill.matches("body:has(#link-to-top)", rootElementImpl);
+    const selector1 = "body:has(#link-to-top)";
+    const result1 = new SelectorHandler(selector1).matches(rootElementImpl);
     expect(result1).toBeTruthy();
-    const result2 = polyfill.matches(
-      "body:has(#unavailable-id)",
-      rootElementImpl
-    );
+
+    const selector2 = "body:has(#unavailable-id)";
+    const result2 = new SelectorHandler(selector2).matches(rootElementImpl);
     expect(result2).toBeFalsy();
   });
 });
@@ -145,12 +140,14 @@ describe("check closest()", () => {
     const targetElement = rootElementImpl.querySelector("#link-to-top");
     if (!targetElement) fail("target element not found");
 
-    const result = polyfill.closest("body:has(#link-to-top)", targetElement);
+    const selector = "body:has(#link-to-top)";
+    const result = new SelectorHandler(selector).closest(targetElement);
     expect(result).toBe(rootElementImpl);
   });
 
   test("", async () => {
-    const result = polyfill.closest("body:has(#link-to-top)", rootElementImpl);
+    const selector = "body:has(#link-to-top)";
+    const result = new SelectorHandler(selector).closest(rootElementImpl);
     expect(result).toBe(rootElementImpl);
   });
 });

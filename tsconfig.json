@@ -3,7 +3,6 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
-    // "declarationDir": "./dist/lib",
     "strict": true,
     "sourceMap": true,
     "noImplicitOverride": true,

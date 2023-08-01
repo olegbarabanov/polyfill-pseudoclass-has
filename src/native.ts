@@ -13,7 +13,7 @@ import { ExtElement, RootNode } from "./types";
  * @param selector selector
  * @returns List of elements
  */
-export function nativeQuerySelectorAll(
+export function callNativeQuerySelectorAll(
   rootNode: RootNode,
   selector: string
 ): ReturnType<ParentNode["querySelectorAll"]> {
@@ -27,21 +27,21 @@ export function nativeQuerySelectorAll(
  * @param selector
  * @returns Element or null
  */
-export function nativeQuerySelector(
+export function callNativeQuerySelector(
   rootNode: RootNode,
   selector: string
 ): ReturnType<ParentNode["querySelector"]> {
   return (rootNode[nativeQuerySelectorSymbol] ?? rootNode.querySelector).call(rootNode, selector);
 }
 
-export function nativeMatches(
+export function callNativeMatches(
   element: Element & ExtElement,
   selector: string
 ): ReturnType<Element["matches"]> {
   return (element[nativeMatchesSymbol] ?? element.matches).call(element, selector)
 }
 
-export function nativeClosest(
+export function callNativeClosest(
   element: Element & ExtElement,
   selector: string
 ): ReturnType<Element["closest"]> {

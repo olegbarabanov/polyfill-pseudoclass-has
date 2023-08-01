@@ -24,10 +24,3 @@ export type ExtElement = {
   };
 
 export type RootNode = ((Element & ExtElement) | Document | DocumentFragment) & ExtNode;
-
-// export interface NativeMethods {
-//   querySelector: ParentNode["querySelector"];
-//   querySelectorAll: ParentNode["querySelectorAll"];
-//   matches?: Element["matches"];
-//   closest?: Element["closest"];
-// }

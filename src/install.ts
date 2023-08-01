@@ -1,4 +1,4 @@
-import { Polyfill } from "./polyfill";
+import { SelectorHandler } from "./selector-handler";
 import {
   nativeClosestSymbol,
   nativeMatchesSymbol,
@@ -11,8 +11,8 @@ import { isElementNode, isDocumentFragmentNode, isDocumentNode } from "./utils";
 /**
  * Installing polyfill in the browser globalThis
  */
-export function installToBrowser() {
-  installTo(
+export function addToBrowser() {
+  addTo(
     globalThis.Element,
     globalThis.Document,
     globalThis.DocumentFragment
@@ -22,8 +22,8 @@ export function installToBrowser() {
 /**
  * Uninstalling polyfill in the browser globalThis
  */
-export function uninstallToBrowser() {
-  uninstallTo(
+export function removeFromBrowser() {
+  removeFrom(
     globalThis.Element,
     globalThis.Document,
     globalThis.DocumentFragment
@@ -38,7 +38,7 @@ export function uninstallToBrowser() {
  * @param DocumentFragment DocumentFragment - base class
  */
 
-export function installTo(
+export function addTo(
   Element: {
     new (...args: any[]): Element & ExtElement & ExtNode;
     prototype: Element & ExtElement & ExtNode;
@@ -69,7 +69,7 @@ export function installTo(
         throw new Error("illegable invoke");
       }
 
-      return new Polyfill().querySelector(...params, this);
+      return new SelectorHandler(...params).query(this);
     };
 
     nodePrototype.prototype.querySelectorAll = function (
@@ -83,7 +83,7 @@ export function installTo(
         throw new Error("illegable invoke");
       }
 
-      return new Polyfill().querySelectorAll(...params, this);
+      return new SelectorHandler(...params).queryAll(this);
     };
   }
 
@@ -94,25 +94,26 @@ export function installTo(
     ...params: Parameters<Element["closest"]>
   ): ReturnType<Element["closest"]> {
     if (!isElementNode(this)) throw new Error("illegable invoke");
-    return new Polyfill().closest(...params, this);
+    return new SelectorHandler(...params).closest(this);
   };
 
   Element.prototype.matches = function (
     ...params: Parameters<Element["matches"]>
   ): ReturnType<Element["matches"]> {
     if (!isElementNode(this)) throw new Error("illegable invoke");
-    return new Polyfill().matches(...params, this);
+    return new SelectorHandler(...params).matches(this);
   };
 }
 
 /**
- * Uninstalling of polyfill in global Element & Document & DocumentFragment nodes
+ * Uninstalling of polyfill from global Element & Document & DocumentFragment nodes
  *
  * @param Element
  * @param Document
  * @param DocumentFragment
  */
-export function uninstallTo(
+
+export function removeFrom(
   Element: {
     new (...args: any[]): Element & ExtElement & ExtNode;
     prototype: Element & ExtElement & ExtNode;
