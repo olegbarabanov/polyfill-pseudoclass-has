@@ -1,6 +1,6 @@
 {
-  "name": "polyfill-dom-selectors-api-pseudoclass-has",
-  "version": "0.0.1-alpha.3",
+  "name": "polyfill-pseudoclass-has",
+  "version": "0.0.1-alpha.4",
   "description": "A polyfill that adds support for the CSS pseudo-class :has() to the DOM Selectors API (by extending .querySelector(), .querySelectorAll(), .matches(), .closest() or called directly)",
   "keywords": ["polyfill", "has", "DOM", "css", "selectors"],
   "main": "./dist/esm/index.js",
@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "rm -fr dist",
     "build": "npm run clean && tsc -p tsconfig.prod.json && npm run bundle:umd",
-    "bundle:umd": "rollup dist/esm/index.js --file dist/umd/polyfill.umd.js --format umd --name polyfill --sourcemap",
+    "bundle:umd": "rollup dist/esm/index.js --file dist/umd/polyfill.umd.js --format umd --name polyfill-pseudoclass-has --sourcemap",
     "test": "jest"
   },
   "type": "module",
@@ -19,9 +19,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/olegbarabanov/polyfill-dom-selectors-api-pseudoclass-has/issues"
+    "url": "https://github.com/olegbarabanov/polyfill-pseudoclass-has/issues"
   },
-  "homepage": "https://github.com/olegbarabanov/polyfill-dom-selectors-api-pseudoclass-has",
+  "homepage": "https://github.com/olegbarabanov/polyfill-pseudoclass-has",
   "devDependencies": {
     "@types/jest": "^28.1.8",
     "@types/node": "^18.7.14",
