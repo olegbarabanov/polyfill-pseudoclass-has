@@ -22,7 +22,7 @@ const documentFragmentImpl = document.createDocumentFragment();
 documentFragmentImpl.append(...document.body.cloneNode(true).childNodes);
 
 describe.each([document, rootElementImpl, documentFragmentImpl])(
-  "Check querySelector",
+  "Check query()",
   (rootNode) => {
     test(`querySelectorfind() 1 + NODE_TYPE ${rootNode.nodeType}`, async () => {
       const targetElement =
@@ -35,7 +35,7 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       expect(result).toBe(targetElement);
     });
 
-    test(`querySelector() 2 + NODE_TYPE ${rootNode.nodeType}`, async () => {
+    test(`query() 2 + NODE_TYPE ${rootNode.nodeType}`, async () => {
       const targetElement = rootNode.querySelector("main");
       if (!targetElement) fail("target element not found");
 
@@ -45,7 +45,7 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       expect(result).toBe(targetElement);
     });
 
-    test(`querySelector() 3 + NODE_TYPE ${rootNode.nodeType}`, async () => {
+    test(`query() 3 + NODE_TYPE ${rootNode.nodeType}`, async () => {
       const targetElement = rootNode.querySelector("main");
       if (!targetElement) fail("target element not found");
 
@@ -55,7 +55,7 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       expect(result).toBe(targetElement);
     });
 
-    test(`querySelector() 4 + NODE_TYPE ${rootNode.nodeType}`, async () => {
+    test(`query() 4 + NODE_TYPE ${rootNode.nodeType}`, async () => {
       const targetElement = rootNode.querySelector("main");
       if (!targetElement) fail("target element not found");
 
@@ -65,7 +65,7 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       expect(result).toBe(targetElement);
     });
 
-    test(`querySelector() 5 + NODE_TYPE ${rootNode.nodeType}`, async () => {
+    test(`query() 5 + NODE_TYPE ${rootNode.nodeType}`, async () => {
       const targetElement = rootNode.querySelector("header[role=banner]");
       if (!targetElement) fail("target element not found");
 
@@ -76,13 +76,13 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       expect(result).toBe(targetElement);
     });
 
-    test(`querySelector() 6 + NODE_TYPE ${rootNode.nodeType}`, async () => {
+    test(`query() 6 + NODE_TYPE ${rootNode.nodeType}`, async () => {
       const selector = "main:has(#link-to-top) unavailable-element";
       const result = new SelectorHandler(selector).query(rootNode);
       expect(result).toBeNull();
     });
 
-    test(`querySelector() 7 + NODE_TYPE ${rootNode.nodeType}`, async () => {
+    test(`query() 7 + NODE_TYPE ${rootNode.nodeType}`, async () => {
       const targetElement = rootNode.querySelector("#container");
       if (!targetElement) fail("target element not found");
 
@@ -95,9 +95,9 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
 );
 
 describe.each([document, rootElementImpl, documentFragmentImpl])(
-  "Check querySelectorAll",
+  "Check queryAll",
   (rootNode) => {
-    test(`querySelectorAll() 1 + NODE_TYPE ${rootNode.nodeType}`, async () => {
+    test(`queryAll() 1 + NODE_TYPE ${rootNode.nodeType}`, async () => {
       const targetElements = rootNode.querySelectorAll("main header");
       if (targetElements.length === 0) fail("target elements not found");
 
