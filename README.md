@@ -104,14 +104,14 @@ const polyfill = window['polyfill-pseudoclass-has']; // can also be used via glo
     removeFromBrowser();
     ```
 
-  - **```addTo(Element.prototype, Document.prototype, DocumentFragment.prototype)```**
+  - **```addTo(Element, Document, DocumentFragment)```**
 
     Installing of polyfill in global Element & Document & DocumentFragment nodes (for integration into a third-party environment, for example JSDOM).
 
     ```js
     // Example
     import { addTo } from "polyfill-pseudoclass-has";
-    addTo(Element.prototype, Document.prototype, DocumentFragment.prototype);
+    addTo(Element, Document, DocumentFragment);
     document.querySelectorAll('div:has(img)'); // now it's polyfilled
     ```
 
@@ -121,10 +121,10 @@ const polyfill = window['polyfill-pseudoclass-has']; // can also be used via glo
     import { JSDOM } from "jsdom";
 
     const { window: { Element, Document, DocumentFragment } } = new JSDOM();
-    addTo(Element.prototype, Document.prototype, DocumentFragment.prototype);
+    addTo(Element, Document, DocumentFragment);
     ```
 
-  - **```removeFrom(Element.prototype, Document.prototype, DocumentFragment.prototype)```**
+  - **```removeFrom(Element, Document, DocumentFragment)```**
 
     Unstalling of polyfill from global Element & Document & DocumentFragment nodes (for integration into a third-party environment, for example JSDOM).
 
