@@ -4,34 +4,34 @@ import {
   nativeQuerySelectorAllSymbol,
   nativeQuerySelectorSymbol,
 } from "./symbols";
-import { ExtElement, RootNode } from "./types";
+import { ExtElement, ScopeNode } from "./types";
 
 /**
  * Calls the stored native querySelectorAll()
  *
- * @param rootNode Root node
+ * @param scopeNode Scope node
  * @param selector selector
  * @returns List of elements
  */
 export function callNativeQuerySelectorAll(
-  rootNode: RootNode,
+  scopeNode: ScopeNode,
   selector: string
 ): ReturnType<ParentNode["querySelectorAll"]> {
-  return (rootNode[nativeQuerySelectorAllSymbol] ?? rootNode.querySelectorAll).call(rootNode, selector)
+  return (scopeNode[nativeQuerySelectorAllSymbol] ?? scopeNode.querySelectorAll).call(scopeNode, selector)
 }
 
 /**
  * Calls the stored native querySelector()
  *
- * @param rootNode
+ * @param scopeNode
  * @param selector
  * @returns Element or null
  */
 export function callNativeQuerySelector(
-  rootNode: RootNode,
+  scopeNode: ScopeNode,
   selector: string
 ): ReturnType<ParentNode["querySelector"]> {
-  return (rootNode[nativeQuerySelectorSymbol] ?? rootNode.querySelector).call(rootNode, selector);
+  return (scopeNode[nativeQuerySelectorSymbol] ?? scopeNode.querySelector).call(scopeNode, selector);
 }
 
 export function callNativeMatches(

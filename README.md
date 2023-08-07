@@ -43,9 +43,9 @@ const polyfill = window['polyfill-pseudoclass-has']; // can also be used via glo
       const selectorHandler = new SelectorHandler("body section:has(.foo):has(.bar) div:has(img)");
       ```
 
-    - **`query(rootNode: Element | Document | DocumentFragment): Element | null`**
+    - **`query(scopeNode: Element | Document | DocumentFragment): Element | null`**
 
-      Searches for elements in the rootNode (which can be an instance of an [Element](https://developer.mozilla.org/docs/Web/API/Element) or a [Document](https://developer.mozilla.org/docs/Web/API/Document) or a [DocumentFragment](https://developer.mozilla.org/docs/Web/API/DocumentFragment)). This is similar to [Node.querySelectorAll()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll).
+      Searches for elements in the scopeNode (which can be an instance of an [Element](https://developer.mozilla.org/docs/Web/API/Element) or a [Document](https://developer.mozilla.org/docs/Web/API/Document) or a [DocumentFragment](https://developer.mozilla.org/docs/Web/API/DocumentFragment)). This is similar to [Node.querySelectorAll()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll).
 
       ```js
       // Example
@@ -53,9 +53,9 @@ const polyfill = window['polyfill-pseudoclass-has']; // can also be used via glo
       selectorHandler.query(document);
       ```
 
-    - **`queryAll(rootNode: Element | Document | DocumentFragment): NodeListOf<Element>`**  
+    - **`queryAll(scopeNode: Element | Document | DocumentFragment): NodeListOf<Element>`**  
 
-      Search for a single element in the rootNode (which can be an instance of an [Element](https://developer.mozilla.org/docs/Web/API/Element) or a [Document](https://developer.mozilla.org/docs/Web/API/Document) or a [DocumentFragment](https://developer.mozilla.org/docs/Web/API/DocumentFragment)). This is similar to [Node.querySelector()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector).
+      Search for a single element in the scopeNode (which can be an instance of an [Element](https://developer.mozilla.org/docs/Web/API/Element) or a [Document](https://developer.mozilla.org/docs/Web/API/Document) or a [DocumentFragment](https://developer.mozilla.org/docs/Web/API/DocumentFragment)). This is similar to [Node.querySelector()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector).
 
       ```js
       // Example

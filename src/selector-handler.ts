@@ -1,18 +1,23 @@
-import { callNativeQuerySelectorAll, callNativeQuerySelector, callNativeMatches, callNativeClosest } from "./native";
-import { LocalSelector, RootNode } from "./types";
+import {
+  callNativeQuerySelectorAll,
+  callNativeQuerySelector,
+  callNativeMatches,
+  callNativeClosest,
+} from "./native";
+import { LocalSelector, ScopeNode } from "./types";
 import { isElementNode, isDocumentFragmentNode, isDocumentNode } from "./utils";
 
 export class SelectorHandler {
-
-/**
- * The name of the element used to nest a group of elements, if needed
- */
+  /**
+   * The name of the element used to nest a group of elements, if needed
+   */
   readonly blockScopeElementTagName: string = "polyfill-block-scope-element";
 
   /**
    * Prefix of a temporary attribute to be used when the element needs to be modified
    */
-  readonly checkedIdPrefix: string = "____attr-for-polyfill-pseudoclass-HAS___";
+  readonly checkedIdPrefix: string = "__attr__polyfill-pseudoclass-has__";
+  readonly rootElementUniqueAttr:string = "__root-element__polyfill-pseudoclass-has__";
   readonly localSelectors: readonly LocalSelector[];
   readonly transformSelector: string;
   readonly hasLocalSelector: boolean;
@@ -25,12 +30,12 @@ export class SelectorHandler {
     this.transformSelector = this.getTransformSelector();
   }
 
-/**
- * Calculates the position of an element relative to siblings
- * 
- * @param element Element
- * @returns position number
- */
+  /**
+   * Calculates the position of an element relative to siblings
+   *
+   * @param element Element
+   * @returns position number
+   */
 
   protected getElementPosition(element: Element): number {
     let position = 1;
@@ -41,12 +46,16 @@ export class SelectorHandler {
     return position;
   }
 
-/**
- * Calculates all parent elements
- * 
- * @param element Element
- * @returns Array of parent elements
- */
+  protected getRootElement(element: Element): Element {
+    return this.getParentElements(element).shift() ?? element;
+  }
+
+  /**
+   * Calculates all parent elements
+   *
+   * @param element Element
+   * @returns Array of parent elements
+   */
 
   protected getParentElements(element: Element): Element[] {
     const elements: Element[] = [];
@@ -59,16 +68,15 @@ export class SelectorHandler {
 
   /**
    * Gets a single subselector (local selectors) in a common selector (global selector)
-   * 
+   *
    * @param globalSelector selector
    * @param startPosition Starting position of the subselector search
-   * @param idPrefix Prefix of a temporary attribute to be used when the element needs to be modified
    * @returns List of subselectors (local selectors)
    */
 
   protected getLocalSelector(
     globalSelector: string,
-    startPosition: number = 0,
+    startPosition: number = 0
   ): null | LocalSelector {
     const token = ":has(";
     const ruleStart = globalSelector.indexOf(token, startPosition);
@@ -104,10 +112,9 @@ export class SelectorHandler {
     };
   }
 
-
   /**
    * Gets all subselectors (local selectors) in a common selector (global selector)
-   * 
+   *
    * @param globalSelector Common selector (global selector)
    * @returns Subselectors (local selectors)
    */
@@ -128,35 +135,29 @@ export class SelectorHandler {
   }
 
   /**
-   * Gets a unique selector from the root element to the specified element
-   * 
+   * Gets a unique selector from the scope element to the specified element
+   *
    * @param element Target element
-   * @param rootElement Root Element
+   * @param scopeElement Scope Element
    * @returns selector
    */
 
-  protected getUniqueSelector(element: Element, rootElement: Element): string {
-    const stackSubSelectors: string[] = [];
+  protected getUniqueSelector(element: Element, rootUniqueSelector: string = ':scope'): string {
+    const elements = this.getParentElements(element);
+    elements.shift(); // remove root element;
+    elements.push(element);
 
-    if (!rootElement.contains(element)) {
-      throw new Error("Fragment does not contain the specified element");
-    }
-
-    for (
-      let item: null | Element = element;
-      item && item !== rootElement;
-      item = item.parentElement
-    ) {
+    const stackSubSelectors: string[] = elements.map((item) => {
       const position = this.getElementPosition(item);
-      stackSubSelectors.unshift(`>:nth-child(${position})`);
-    }
+      return `>:nth-child(${position})`;
+    });
 
-    return ":scope".concat(...stackSubSelectors);
+    return rootUniqueSelector.concat(...stackSubSelectors);
   }
 
   /**
    * Transforms all local subselectors inside the global selector to simple CSS rules
-   * 
+   *
    * @returns selector
    */
 
@@ -164,7 +165,10 @@ export class SelectorHandler {
     let destSelectorChunks: string[] = [];
     let position = 0;
     this.localSelectors.forEach((selector) => {
-      const ruleChunk = this.globalSelector.substring(position, selector.position);
+      const ruleChunk = this.globalSelector.substring(
+        position,
+        selector.position
+      );
       destSelectorChunks.push(ruleChunk, `[${selector.id}]`);
       position = selector.position + selector.rule.length;
     });
@@ -173,31 +177,32 @@ export class SelectorHandler {
     return destSelectorChunks.join("");
   }
 
-/**
- * A method that searches for elements with support for the ":has" pseudo-class
- * 
- * @param rootElement Root element
- * @returns NodeList of found elements
- */
+  /**
+   * A method that searches for elements with support for the ":has" pseudo-class
+   *
+   * @param scopeElement Scope element
+   * @returns NodeList of found elements
+   */
 
-  protected find(rootElement: Element): NodeListOf<Element> {
-    if (!isElementNode(rootElement)) {
-      throw new Error("root element must be of type Element"); // for JS environment
+  protected find(scopeElement: Element): NodeListOf<Element> {
+    if (!isElementNode(scopeElement)) {
+      throw new Error("scope element must be of type Element"); // for JS environment
     }
+    
+    const rootElement = this.getRootElement(scopeElement);
+    rootElement.setAttribute(this.rootElementUniqueAttr, "");
 
-    const elements = callNativeQuerySelectorAll(rootElement, "*");
-
+    const elements = [rootElement, ...callNativeQuerySelectorAll(rootElement, "*")];
     const modElements: Map<LocalSelector, Element[]> = new Map(
       this.localSelectors.map((selector) => [selector, []])
     );
 
     for (const item of elements) {
-      const targetElement = item.parentElement ?? item;
-      const targetUniqueSelector = this.getUniqueSelector(item, targetElement);
+      const targetUniqueSelector = this.getUniqueSelector(item, `[${this.rootElementUniqueAttr}]`);
 
       for (const selector of this.localSelectors) {
         const stmt = targetUniqueSelector.concat(" ", selector.selector);
-        if (callNativeQuerySelector(targetElement, stmt)) {
+        if (callNativeQuerySelector(rootElement, stmt)) {
           modElements.get(selector)?.push(item);
         }
       }
@@ -209,13 +214,17 @@ export class SelectorHandler {
         ?.forEach((element) => element.setAttribute(localSelector.id, ""));
     });
 
-    const resultElements = callNativeQuerySelectorAll(rootElement, this.transformSelector);
+    const resultElements = callNativeQuerySelectorAll(
+      scopeElement,
+      this.transformSelector
+    );
 
     this.localSelectors.forEach((localSelector) => {
       modElements
         .get(localSelector)
         ?.forEach((element) => element.removeAttribute(localSelector.id));
     });
+    rootElement.removeAttribute(this.rootElementUniqueAttr);
 
     return resultElements;
   }
@@ -223,67 +232,103 @@ export class SelectorHandler {
   /**
    * This is similar to Node.querySelectorAll()
    * Search for elements. The method operates on a copy of the object's DOM to avoid unwanted MutationObserver calls.
-   * 
-   * @param rootNode Root node
+   *
+   * @param scopeNode Scope node
    * @returns NodeList of found elements
    */
 
-  queryAll(rootNode: RootNode): NodeListOf<Element> {
-    if (!this.hasLocalSelector) return callNativeQuerySelectorAll(rootNode, this.globalSelector);
+  queryAll(scopeNode: ScopeNode): NodeListOf<Element> {
+    if (!this.hasLocalSelector) {
+      return callNativeQuerySelectorAll(scopeNode, this.globalSelector);
+    }
 
+    let scopeElement: Element;
+
+    if (isDocumentNode(scopeNode)) {
+      scopeElement = scopeNode.documentElement; // get top-level element
+    } else if (isDocumentFragmentNode(scopeNode)) {
+      scopeElement = scopeNode.ownerDocument.createElement(
+        this.blockScopeElementTagName
+      );
+      scopeElement.append(scopeNode);
+    } else {
+      scopeElement = scopeNode;
+    }
+
+    const rootNode = scopeElement.getRootNode();
+    
     let rootElement: Element;
-
-    if (isDocumentNode(rootNode)) {
-      rootElement = rootNode.documentElement; // get top-level element
-    } else if (isDocumentFragmentNode(rootNode)) {
+    if (isDocumentFragmentNode(rootNode)) {
       rootElement = rootNode.ownerDocument.createElement(
         this.blockScopeElementTagName
       );
       rootElement.append(rootNode);
     } else {
-      rootElement = rootNode;
+      rootElement = this.getRootElement(scopeElement);
+    };
+
+    const cloneRoot = rootElement.cloneNode(true);
+    if (!isElementNode(cloneRoot)) throw new Error("incompatible node type");
+
+    const cloneRootElement =
+      rootElement === scopeElement
+        ? rootElement.cloneNode(true)
+        : callNativeQuerySelector(
+          cloneRoot,
+          this.getUniqueSelector(scopeElement)
+        );
+
+    if (!cloneRootElement) {
+      throw new Error("unknown error in the process of cloning an element");
+    } else if (!isElementNode(cloneRootElement)) {
+      throw new Error("incompatible node type");
     }
 
-    const cloneRootElement = rootElement.cloneNode(true);
-    if (!isElementNode(cloneRootElement)) throw new Error("incompatible node type")
-
     const selectors = Array.from(this.find(cloneRootElement))
-      .map((item) => this.getUniqueSelector(item, cloneRootElement))
+      .map((item) => this.getUniqueSelector(item))
       .join(",");
 
-    const result = callNativeQuerySelectorAll(rootElement, selectors || "*:not(*)"); // generate empty NodeList if selectors is empty
-    if (isDocumentFragmentNode(rootNode)) {
+    const result = callNativeQuerySelectorAll(
+      rootElement,
+      selectors || "*:not(*)"
+    ); // generate empty NodeList if selectors is empty
+
+    if (isDocumentFragmentNode(scopeNode)) {
+      scopeNode.append(...scopeElement.children);
+    } else if (isDocumentFragmentNode(rootNode)) {
       rootNode.append(...rootElement.children);
     }
 
     return result;
   }
 
-/**
- * This is similar to Node.querySelector()
- * Search for a single element. The method operates on a copy of the object's DOM to avoid unwanted MutationObserver calls.
- * 
- * @param rootNode Root node
- * @returns founded Element or null
- */
+  /**
+   * This is similar to Node.querySelector()
+   * Search for a single element. The method operates on a copy of the object's DOM to avoid unwanted MutationObserver calls.
+   *
+   * @param scopeNode Root node
+   * @returns founded Element or null
+   */
 
-  query(rootNode: RootNode): Element | null {
-    if (!this.hasLocalSelector) return callNativeQuerySelector(rootNode, this.globalSelector);
+  query(scopeNode: ScopeNode): Element | null {
+    if (!this.hasLocalSelector)
+      return callNativeQuerySelector(scopeNode, this.globalSelector);
 
-    const nodeList = this.queryAll(rootNode);
+    const nodeList = this.queryAll(scopeNode);
     return nodeList[0] || null;
   }
 
   /**
    * This is similar to Element.matches()
    * Checks if an element matches a selector.
-   * 
-   * @param element 
+   *
+   * @param element
    * @returns TRUE if the element matches the selector
    */
   matches(element: Element): boolean {
     if (!isElementNode(element)) return false; // for JS environment
-    if (!this.hasLocalSelector) return callNativeMatches(element, this.globalSelector);
+    if (!this.hasLocalSelector)
+      return callNativeMatches(element, this.globalSelector);
 
     const topElement = this.getParentElements(element).shift() ?? element;
     let result = false;
@@ -292,25 +337,28 @@ export class SelectorHandler {
     } else {
       const documentFragment = element.ownerDocument.createDocumentFragment();
       const cloneElement = element.cloneNode(true);
-      if (!isElementNode(cloneElement)) throw new Error("Node not inherited from Element are not supported");
+      if (!isElementNode(cloneElement))
+        throw new Error("Node not inherited from Element are not supported");
       documentFragment.append(cloneElement);
-      result = Array.from(this.queryAll(documentFragment)).includes(cloneElement);
+      result = Array.from(this.queryAll(documentFragment)).includes(
+        cloneElement
+      );
     }
 
-    return result
+    return result;
   }
-
 
   /**
    * This is similar to Element.closest()
    * Searches for the closest parent (and self) that matches the specified selector
-   * 
-   * @param element 
+   *
+   * @param element
    * @returns Found element or null
    */
   closest(element: Element): Element | null {
     if (!isElementNode(element)) return null; // for JS environment
-    if (!this.hasLocalSelector) return callNativeClosest(element, this.globalSelector);
+    if (!this.hasLocalSelector)
+      return callNativeClosest(element, this.globalSelector);
 
     const result = this.getParentElements(element)
       .concat(element)

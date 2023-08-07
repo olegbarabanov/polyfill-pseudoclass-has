@@ -23,4 +23,4 @@ export type ExtElement = {
     [nativeClosestSymbol]?: Element["closest"];
   };
 
-export type RootNode = ((Element & ExtElement) | Document | DocumentFragment) & ExtNode;
+export type ScopeNode = ((Element & ExtElement) | Document | DocumentFragment) & ExtNode;

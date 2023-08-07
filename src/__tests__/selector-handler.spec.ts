@@ -91,8 +91,32 @@ describe.each([document, rootElementImpl, documentFragmentImpl])(
       expect(result).not.toBeNull();
       expect(result).toBe(targetElement);
     });
+
+    test(`query() 8 + NODE_TYPE ${rootNode.nodeType}`, async () => {
+      const targetElement = rootNode.querySelector("#container");
+      if (!targetElement) fail("target element not found");
+
+      const selector = "#container:has(~ *)";
+      const result = new SelectorHandler(selector).query(rootNode);
+      expect(result).not.toBeNull();
+      expect(result).toBe(targetElement);
+    });
+
+
+    test(`query() 9 + NODE_TYPE ${rootNode.nodeType}`, async () => {
+      const scopeNode = rootNode.querySelector('article');
+      if (!scopeNode) fail("element not found");
+      const targetElement = scopeNode.querySelector('header');
+      if (!targetElement) fail("target element not found");
+
+      const selector = "div:has(#text) header";
+      const result = new SelectorHandler(selector).query(scopeNode);
+      expect(result).toBe(targetElement);
+    })
+
   }
 );
+
 
 describe.each([document, rootElementImpl, documentFragmentImpl])(
   "Check queryAll",
