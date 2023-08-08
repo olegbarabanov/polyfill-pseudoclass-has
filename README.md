@@ -1,5 +1,7 @@
 # Polyfill for CSS pseudo-class `:has()` in DOM Selectors API
 
+[![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://github.com/google/gts) ![](https://img.shields.io/npm/v/polyfill-pseudoclass-has.svg)
+
 A polyfill that adds support for the CSS pseudo-class [`:has()`](https://developer.mozilla.org/en-US/docs/Web/CSS/:has) to the DOM Selectors API (by extending [.querySelector()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector), [.querySelectorAll()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll), [.matches()](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches), [.closest()](https://developer.mozilla.org/en-US/docs/Web/API/Element/closest) or called directly)
 
 Polyfill does not use global environment variables in the code and therefore it can work both in the browser environment and in the server-side environment (for example with [JSDOM](https://github.com/jsdom/jsdom))

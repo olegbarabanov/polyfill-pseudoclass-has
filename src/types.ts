@@ -3,7 +3,7 @@ import {
   nativeMatchesSymbol,
   nativeQuerySelectorAllSymbol,
   nativeQuerySelectorSymbol,
-} from "./symbols";
+} from './symbols';
 
 export type LocalSelector = {
   position: number;
@@ -12,15 +12,15 @@ export type LocalSelector = {
   id: string;
 };
 
-
 export type ExtNode = {
-    [nativeQuerySelectorSymbol]?: ParentNode["querySelector"];
-    [nativeQuerySelectorAllSymbol]?: ParentNode["querySelectorAll"];
-  };
-  
-export type ExtElement = {
-    [nativeMatchesSymbol]?: Element["matches"];
-    [nativeClosestSymbol]?: Element["closest"];
-  };
+  [nativeQuerySelectorSymbol]?: ParentNode['querySelector'];
+  [nativeQuerySelectorAllSymbol]?: ParentNode['querySelectorAll'];
+};
 
-export type ScopeNode = ((Element & ExtElement) | Document | DocumentFragment) & ExtNode;
+export type ExtElement = {
+  [nativeMatchesSymbol]?: Element['matches'];
+  [nativeClosestSymbol]?: Element['closest'];
+};
+
+export type ScopeNode = ((Element & ExtElement) | Document | DocumentFragment) &
+  ExtNode;

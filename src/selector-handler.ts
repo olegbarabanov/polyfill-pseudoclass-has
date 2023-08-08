@@ -3,21 +3,22 @@ import {
   callNativeQuerySelector,
   callNativeMatches,
   callNativeClosest,
-} from "./native";
-import { LocalSelector, ScopeNode } from "./types";
-import { isElementNode, isDocumentFragmentNode, isDocumentNode } from "./utils";
+} from './native';
+import {LocalSelector, ScopeNode} from './types';
+import {isElementNode, isDocumentFragmentNode, isDocumentNode} from './utils';
 
 export class SelectorHandler {
   /**
    * The name of the element used to nest a group of elements, if needed
    */
-  readonly blockScopeElementTagName: string = "polyfill-block-scope-element";
+  readonly blockScopeElementTagName: string = 'polyfill-block-scope-element';
 
   /**
    * Prefix of a temporary attribute to be used when the element needs to be modified
    */
-  readonly checkedIdPrefix: string = "__attr__polyfill-pseudoclass-has__";
-  readonly rootElementUniqueAttr:string = "__root-element__polyfill-pseudoclass-has__";
+  readonly checkedIdPrefix: string = '__attr__polyfill-pseudoclass-has__';
+  readonly rootElementUniqueAttr: string =
+    '__root-element__polyfill-pseudoclass-has__';
   readonly localSelectors: readonly LocalSelector[];
   readonly transformSelector: string;
   readonly hasLocalSelector: boolean;
@@ -76,9 +77,9 @@ export class SelectorHandler {
 
   protected getLocalSelector(
     globalSelector: string,
-    startPosition: number = 0
+    startPosition = 0
   ): null | LocalSelector {
-    const token = ":has(";
+    const token = ':has(';
     const ruleStart = globalSelector.indexOf(token, startPosition);
     if (ruleStart === -1) return null;
 
@@ -89,13 +90,13 @@ export class SelectorHandler {
 
     while (globalSelector[subEnd]) {
       switch (globalSelector[subEnd]) {
-        case "(":
+        case '(':
           openChar++;
           break;
-        case ")":
+        case ')':
           openChar--;
           break;
-        case "/": // ignore next symbol
+        case '/': // ignore next symbol
           continue;
       }
 
@@ -142,12 +143,15 @@ export class SelectorHandler {
    * @returns selector
    */
 
-  protected getUniqueSelector(element: Element, rootUniqueSelector: string = ':scope'): string {
+  protected getUniqueSelector(
+    element: Element,
+    rootUniqueSelector = ':scope'
+  ): string {
     const elements = this.getParentElements(element);
     elements.shift(); // remove root element;
     elements.push(element);
 
-    const stackSubSelectors: string[] = elements.map((item) => {
+    const stackSubSelectors: string[] = elements.map(item => {
       const position = this.getElementPosition(item);
       return `>:nth-child(${position})`;
     });
@@ -162,9 +166,9 @@ export class SelectorHandler {
    */
 
   protected getTransformSelector(): string {
-    let destSelectorChunks: string[] = [];
+    const destSelectorChunks: string[] = [];
     let position = 0;
-    this.localSelectors.forEach((selector) => {
+    this.localSelectors.forEach(selector => {
       const ruleChunk = this.globalSelector.substring(
         position,
         selector.position
@@ -174,7 +178,7 @@ export class SelectorHandler {
     });
 
     destSelectorChunks.push(this.globalSelector.substring(position));
-    return destSelectorChunks.join("");
+    return destSelectorChunks.join('');
   }
 
   /**
@@ -186,32 +190,38 @@ export class SelectorHandler {
 
   protected find(scopeElement: Element): NodeListOf<Element> {
     if (!isElementNode(scopeElement)) {
-      throw new Error("scope element must be of type Element"); // for JS environment
+      throw new Error('scope element must be of type Element'); // for JS environment
     }
-    
-    const rootElement = this.getRootElement(scopeElement);
-    rootElement.setAttribute(this.rootElementUniqueAttr, "");
 
-    const elements = [rootElement, ...callNativeQuerySelectorAll(rootElement, "*")];
+    const rootElement = this.getRootElement(scopeElement);
+    rootElement.setAttribute(this.rootElementUniqueAttr, '');
+
+    const elements = [
+      rootElement,
+      ...callNativeQuerySelectorAll(rootElement, '*'),
+    ];
     const modElements: Map<LocalSelector, Element[]> = new Map(
-      this.localSelectors.map((selector) => [selector, []])
+      this.localSelectors.map(selector => [selector, []])
     );
 
     for (const item of elements) {
-      const targetUniqueSelector = this.getUniqueSelector(item, `[${this.rootElementUniqueAttr}]`);
+      const targetUniqueSelector = this.getUniqueSelector(
+        item,
+        `[${this.rootElementUniqueAttr}]`
+      );
 
       for (const selector of this.localSelectors) {
-        const stmt = targetUniqueSelector.concat(" ", selector.selector);
+        const stmt = targetUniqueSelector.concat(' ', selector.selector);
         if (callNativeQuerySelector(rootElement, stmt)) {
           modElements.get(selector)?.push(item);
         }
       }
     }
 
-    this.localSelectors.forEach((localSelector) => {
+    this.localSelectors.forEach(localSelector => {
       modElements
         .get(localSelector)
-        ?.forEach((element) => element.setAttribute(localSelector.id, ""));
+        ?.forEach(element => element.setAttribute(localSelector.id, ''));
     });
 
     const resultElements = callNativeQuerySelectorAll(
@@ -219,10 +229,10 @@ export class SelectorHandler {
       this.transformSelector
     );
 
-    this.localSelectors.forEach((localSelector) => {
+    this.localSelectors.forEach(localSelector => {
       modElements
         .get(localSelector)
-        ?.forEach((element) => element.removeAttribute(localSelector.id));
+        ?.forEach(element => element.removeAttribute(localSelector.id));
     });
     rootElement.removeAttribute(this.rootElementUniqueAttr);
 
@@ -256,7 +266,7 @@ export class SelectorHandler {
     }
 
     const rootNode = scopeElement.getRootNode();
-    
+
     let rootElement: Element;
     if (isDocumentFragmentNode(rootNode)) {
       rootElement = rootNode.ownerDocument.createElement(
@@ -265,32 +275,32 @@ export class SelectorHandler {
       rootElement.append(rootNode);
     } else {
       rootElement = this.getRootElement(scopeElement);
-    };
+    }
 
     const cloneRoot = rootElement.cloneNode(true);
-    if (!isElementNode(cloneRoot)) throw new Error("incompatible node type");
+    if (!isElementNode(cloneRoot)) throw new Error('incompatible node type');
 
     const cloneRootElement =
       rootElement === scopeElement
         ? rootElement.cloneNode(true)
         : callNativeQuerySelector(
-          cloneRoot,
-          this.getUniqueSelector(scopeElement)
-        );
+            cloneRoot,
+            this.getUniqueSelector(scopeElement)
+          );
 
     if (!cloneRootElement) {
-      throw new Error("unknown error in the process of cloning an element");
+      throw new Error('unknown error in the process of cloning an element');
     } else if (!isElementNode(cloneRootElement)) {
-      throw new Error("incompatible node type");
+      throw new Error('incompatible node type');
     }
 
     const selectors = Array.from(this.find(cloneRootElement))
-      .map((item) => this.getUniqueSelector(item))
-      .join(",");
+      .map(item => this.getUniqueSelector(item))
+      .join(',');
 
     const result = callNativeQuerySelectorAll(
       rootElement,
-      selectors || "*:not(*)"
+      selectors || '*:not(*)'
     ); // generate empty NodeList if selectors is empty
 
     if (isDocumentFragmentNode(scopeNode)) {
@@ -338,7 +348,7 @@ export class SelectorHandler {
       const documentFragment = element.ownerDocument.createDocumentFragment();
       const cloneElement = element.cloneNode(true);
       if (!isElementNode(cloneElement))
-        throw new Error("Node not inherited from Element are not supported");
+        throw new Error('Node not inherited from Element are not supported');
       documentFragment.append(cloneElement);
       result = Array.from(this.queryAll(documentFragment)).includes(
         cloneElement
@@ -363,7 +373,7 @@ export class SelectorHandler {
     const result = this.getParentElements(element)
       .concat(element)
       .reverse()
-      .find((element) => this.matches(element));
+      .find(element => this.matches(element));
     return result ?? null;
   }
 }

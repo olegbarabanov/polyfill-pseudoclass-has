@@ -1,4 +1,5 @@
 {
+  "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
@@ -7,12 +8,13 @@
     "sourceMap": true,
     "noImplicitOverride": true,
     "declaration": true,
-    "outDir": "./dist",
+    "outDir": "./dist/esm",
     "lib": ["ESNext", "scripthost", "DOM","DOM.Iterable"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
     "types": ["jest", "node"]
-  }
+  },
+  "exclude": ["node_modules", "dist"]
 }

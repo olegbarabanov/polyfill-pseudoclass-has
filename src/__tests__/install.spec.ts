@@ -1,32 +1,32 @@
-import * as fs from "fs";
-import { JSDOM } from "jsdom";
-import * as path from "path";
-import { addTo } from "..";
+import * as fs from 'fs';
+import {JSDOM} from 'jsdom';
+import * as path from 'path';
+import {addTo} from '..';
 
 const globalHtml = fs.readFileSync(
-  path.resolve(__dirname, "./test.html"),
-  "utf8"
+  path.resolve(__dirname, './test.html'),
+  'utf8'
 );
 
 const {
-  window: { document, Element, Document, DocumentFragment },
+  window: {document, Element, Document, DocumentFragment},
 } = new JSDOM();
 
 document.documentElement.innerHTML = globalHtml;
 
-const rootElementImpl = document.createElement("body");
+const rootElementImpl = document.createElement('body');
 rootElementImpl.innerHTML = document.body.innerHTML;
 const documentFragmentImpl = document.createDocumentFragment();
 documentFragmentImpl.append(...document.body.cloneNode(true).childNodes);
 
-describe("check addTo()", () => {
+describe('check addTo()', () => {
   beforeAll(() => {
     addTo(Element, Document, DocumentFragment);
   });
 
-  test("check querySelectorAll()", async () => {
+  test('check querySelectorAll()', async () => {
     const targetElements = rootElementImpl.querySelectorAll(
-      "header:has(~article)"
+      'header:has(~article)'
     );
 
     expect(targetElements.length).toBe(1);

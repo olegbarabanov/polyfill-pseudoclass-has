@@ -1,2 +1,2 @@
-export * from "./selector-handler";
-export * from "./install";
+export * from './selector-handler';
+export * from './install';

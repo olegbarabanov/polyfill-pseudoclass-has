@@ -1,22 +1,18 @@
-import { SelectorHandler } from "./selector-handler";
+import {SelectorHandler} from './selector-handler';
 import {
   nativeClosestSymbol,
   nativeMatchesSymbol,
   nativeQuerySelectorAllSymbol,
   nativeQuerySelectorSymbol,
-} from "./symbols";
-import { ExtElement, ExtNode } from "./types";
-import { isElementNode, isDocumentFragmentNode, isDocumentNode } from "./utils";
+} from './symbols';
+import {ExtElement, ExtNode} from './types';
+import {isElementNode, isDocumentFragmentNode, isDocumentNode} from './utils';
 
 /**
  * Installing polyfill in the browser globalThis
  */
 export function addToBrowser() {
-  addTo(
-    globalThis.Element,
-    globalThis.Document,
-    globalThis.DocumentFragment
-  );
+  addTo(globalThis.Element, globalThis.Document, globalThis.DocumentFragment);
 }
 
 /**
@@ -40,15 +36,15 @@ export function removeFromBrowser() {
 
 export function addTo(
   Element: {
-    new (...args: any[]): Element & ExtElement & ExtNode;
+    new (...args: unknown[]): Element & ExtElement & ExtNode;
     prototype: Element & ExtElement & ExtNode;
   },
   Document: {
-    new (...args: any[]): Document & ExtNode;
+    new (...args: unknown[]): Document & ExtNode;
     prototype: Document & ExtNode;
   },
   DocumentFragment: {
-    new (...args: any[]): DocumentFragment & ExtNode;
+    new (...args: unknown[]): DocumentFragment & ExtNode;
     prototype: DocumentFragment & ExtNode;
   }
 ) {
@@ -59,28 +55,28 @@ export function addTo(
       nodePrototype.prototype.querySelectorAll;
 
     nodePrototype.prototype.querySelector = function (
-      ...params: Parameters<ParentNode["querySelector"]>
-    ): ReturnType<ParentNode["querySelector"]> {
+      ...params: Parameters<ParentNode['querySelector']>
+    ): ReturnType<ParentNode['querySelector']> {
       if (
         !isElementNode(this) &&
         !isDocumentNode(this) &&
         !isDocumentFragmentNode(this)
       ) {
-        throw new Error("illegable invoke");
+        throw new Error('illegable invoke');
       }
 
       return new SelectorHandler(...params).query(this);
     };
 
     nodePrototype.prototype.querySelectorAll = function (
-      ...params: Parameters<ParentNode["querySelectorAll"]>
-    ): ReturnType<ParentNode["querySelectorAll"]> {
+      ...params: Parameters<ParentNode['querySelectorAll']>
+    ): ReturnType<ParentNode['querySelectorAll']> {
       if (
         !isElementNode(this) &&
         !isDocumentNode(this) &&
         !isDocumentFragmentNode(this)
       ) {
-        throw new Error("illegable invoke");
+        throw new Error('illegable invoke');
       }
 
       return new SelectorHandler(...params).queryAll(this);
@@ -91,16 +87,16 @@ export function addTo(
   Element.prototype[nativeMatchesSymbol] = Element.prototype.matches;
 
   Element.prototype.closest = function (
-    ...params: Parameters<Element["closest"]>
-  ): ReturnType<Element["closest"]> {
-    if (!isElementNode(this)) throw new Error("illegable invoke");
+    ...params: Parameters<Element['closest']>
+  ): ReturnType<Element['closest']> {
+    if (!isElementNode(this)) throw new Error('illegable invoke');
     return new SelectorHandler(...params).closest(this);
   };
 
   Element.prototype.matches = function (
-    ...params: Parameters<Element["matches"]>
-  ): ReturnType<Element["matches"]> {
-    if (!isElementNode(this)) throw new Error("illegable invoke");
+    ...params: Parameters<Element['matches']>
+  ): ReturnType<Element['matches']> {
+    if (!isElementNode(this)) throw new Error('illegable invoke');
     return new SelectorHandler(...params).matches(this);
   };
 }
@@ -115,15 +111,15 @@ export function addTo(
 
 export function removeFrom(
   Element: {
-    new (...args: any[]): Element & ExtElement & ExtNode;
+    new (...args: unknown[]): Element & ExtElement & ExtNode;
     prototype: Element & ExtElement & ExtNode;
   },
   Document: {
-    new (...args: any[]): Document & ExtNode;
+    new (...args: unknown[]): Document & ExtNode;
     prototype: Document & ExtNode;
   },
   DocumentFragment: {
-    new (...args: any[]): DocumentFragment & ExtNode;
+    new (...args: unknown[]): DocumentFragment & ExtNode;
     prototype: DocumentFragment & ExtNode;
   }
 ) {

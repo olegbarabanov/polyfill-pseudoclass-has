@@ -3,8 +3,8 @@ import {
   nativeMatchesSymbol,
   nativeQuerySelectorAllSymbol,
   nativeQuerySelectorSymbol,
-} from "./symbols";
-import { ExtElement, ScopeNode } from "./types";
+} from './symbols';
+import {ExtElement, ScopeNode} from './types';
 
 /**
  * Calls the stored native querySelectorAll()
@@ -16,8 +16,10 @@ import { ExtElement, ScopeNode } from "./types";
 export function callNativeQuerySelectorAll(
   scopeNode: ScopeNode,
   selector: string
-): ReturnType<ParentNode["querySelectorAll"]> {
-  return (scopeNode[nativeQuerySelectorAllSymbol] ?? scopeNode.querySelectorAll).call(scopeNode, selector)
+): ReturnType<ParentNode['querySelectorAll']> {
+  return (
+    scopeNode[nativeQuerySelectorAllSymbol] ?? scopeNode.querySelectorAll
+  ).call(scopeNode, selector);
 }
 
 /**
@@ -30,20 +32,29 @@ export function callNativeQuerySelectorAll(
 export function callNativeQuerySelector(
   scopeNode: ScopeNode,
   selector: string
-): ReturnType<ParentNode["querySelector"]> {
-  return (scopeNode[nativeQuerySelectorSymbol] ?? scopeNode.querySelector).call(scopeNode, selector);
+): ReturnType<ParentNode['querySelector']> {
+  return (scopeNode[nativeQuerySelectorSymbol] ?? scopeNode.querySelector).call(
+    scopeNode,
+    selector
+  );
 }
 
 export function callNativeMatches(
   element: Element & ExtElement,
   selector: string
-): ReturnType<Element["matches"]> {
-  return (element[nativeMatchesSymbol] ?? element.matches).call(element, selector)
+): ReturnType<Element['matches']> {
+  return (element[nativeMatchesSymbol] ?? element.matches).call(
+    element,
+    selector
+  );
 }
 
 export function callNativeClosest(
   element: Element & ExtElement,
   selector: string
-): ReturnType<Element["closest"]> {
-  return (element[nativeClosestSymbol] ?? element.matches).call(element, selector);
+): ReturnType<Element['closest']> {
+  return (element[nativeClosestSymbol] ?? element.matches).call(
+    element,
+    selector
+  );
 }
