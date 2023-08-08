@@ -1,6 +1,6 @@
 {
   "name": "polyfill-pseudoclass-has",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A polyfill that adds support for the CSS pseudo-class :has() to the DOM Selectors API (by extending .querySelector(), .querySelectorAll(), .matches(), .closest() or called directly)",
   "keywords": [
     "polyfill",
