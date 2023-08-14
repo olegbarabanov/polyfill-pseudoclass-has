@@ -1,6 +1,6 @@
 # Polyfill for CSS pseudo-class `:has()` in DOM Selectors API
 
-[![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://github.com/google/gts) ![](https://img.shields.io/npm/v/polyfill-pseudoclass-has.svg)
+[![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://github.com/google/gts) [![](https://img.shields.io/npm/v/polyfill-pseudoclass-has.svg)](https://www.npmjs.com/package/polyfill-pseudoclass-has)
 
 A polyfill that adds support for the CSS pseudo-class [`:has()`](https://developer.mozilla.org/en-US/docs/Web/CSS/:has) to the DOM Selectors API (by extending [.querySelector()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector), [.querySelectorAll()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll), [.matches()](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches), [.closest()](https://developer.mozilla.org/en-US/docs/Web/API/Element/closest) or called directly)
 
@@ -16,19 +16,19 @@ npm install polyfill-pseudoclass-has --save
 
 ### ES6 Modules
 ```js
-import * as polyfill from "polyfill-pseudoclass-has/esm/";
+import * as polyfill from "polyfill-pseudoclass-has";
+```
+
+### CommonJS
+```js
+const polyfill = require("polyfill-pseudoclass-has");
 ```
 
 ### UMD (for environments that do not support ES6 Modules)
 
-Use CommonJS `require()`:
+UMD module can be used as a CommonJS module or by including it in the code using `<script src="..." />`:
 ```js
-const polyfill = require("polyfill-pseudoclass-has/umd/polyfill.umd.js");
-```
-
-or by including it in the code using `<script src="..." />`:
-```js
-<script src="/umd/polyfill.umd.js" />
+<script src="/dist/polyfill.umd.js" />
 <script>
 const polyfill = window['polyfill-pseudoclass-has']; // can also be used via globalThis['polyfill-pseudoclass-has']
 ...
