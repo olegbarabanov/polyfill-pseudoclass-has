@@ -9,15 +9,19 @@
     "css",
     "selectors"
   ],
-  "main": "./dist/esm/index.js",
-  "types": "./dist/esm/index.d.ts",
+  "main": "./dist/polyfill.cjs",
+  "module": "./dist/polyfill.esm.js",
+  "types": "./dist/polyfill.esm.d.ts",
+  "exports": {
+    "import": "./dist/polyfill.esm.js",
+    "require": "./dist/polyfill.cjs"
+  },
   "files": [
     "dist/**"
   ],
   "scripts": {
     "clean": "rm -fr dist",
-    "build": "npm run clean && tsc -p tsconfig.prod.json && npm run bundle:umd",
-    "bundle:umd": "rollup dist/esm/index.js --file dist/umd/polyfill.umd.js --format umd --name polyfill-pseudoclass-has --sourcemap",
+    "build": "npm run clean && tsc --noEmit && vite build",
     "test": "jest",
     "lint": "gts lint",
     "fix": "gts fix"
@@ -41,15 +45,15 @@
   },
   "devDependencies": {
     "@types/jest": "^28.1.8",
+    "@types/jsdom": "^21.1.1",
     "@types/node": "^20.4.5",
     "gts": "^5.0.0",
-    "jest-environment-jsdom": "^29.5.0",
     "jsdom": "^22.1.0",
-    "rollup": "^3.26.2",
     "ts-jest": "^28.0.8",
-    "ts-loader": "9.3.1",
     "ts-node": "^10.9.1",
-    "typescript": "~5.1.6"
+    "typescript": "~5.1.6",
+    "vite": "^4.4.9",
+    "vite-plugin-dts": "^3.5.2"
   },
   "jest": {
     "preset": "ts-jest",
