@@ -31,4 +31,25 @@ describe('check addTo()', () => {
 
     expect(targetElements.length).toBe(1);
   });
+
+  test('check querySelector()', async () => {
+    const targetElement = rootElementImpl.querySelector('header:has(~article)');
+
+    expect(targetElement).toBeInstanceOf(Element);
+  });
+
+  test('check matches()', async () => {
+    const targetElement = rootElementImpl.querySelector('nav');
+    if (!targetElement) fail('target element not found');
+
+    expect(targetElement.matches('div:has(ul) nav')).toBeTruthy();
+  });
+
+  test('check closest()', async () => {
+    const targetElement = rootElementImpl.querySelector('div#container > nav');
+    const subTargetElement = targetElement?.querySelector('nav > ul');
+    if (!subTargetElement) fail('required elements not found');
+    const result = subTargetElement.closest('div > nav:has(ul li):has(~main)');
+    expect(result).toBe(targetElement);
+  });
 });
