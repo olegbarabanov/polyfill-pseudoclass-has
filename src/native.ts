@@ -23,7 +23,7 @@ export function callNativeQuerySelectorAll(
 }
 
 /**
- * Calls the stored native querySelector()
+ * Calls the stored native .querySelector()
  *
  * @param scopeNode
  * @param selector
@@ -39,6 +39,13 @@ export function callNativeQuerySelector(
   );
 }
 
+/**
+ * Calls the stored native Element.matches()
+ *
+ * @param element
+ * @param selector
+ * @returns According to Element.matches(), returns true if matched and false otherwise
+ */
 export function callNativeMatches(
   element: Element & ExtElement,
   selector: string
@@ -49,6 +56,13 @@ export function callNativeMatches(
   );
 }
 
+/**
+ * Calls the stored native Element.closest()
+ *
+ * @param element
+ * @param selector
+ * @returns According to Element.closest(), returns the first element found or null
+ */
 export function callNativeClosest(
   element: Element & ExtElement,
   selector: string
