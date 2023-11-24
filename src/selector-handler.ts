@@ -19,6 +19,7 @@ export class SelectorHandler {
   readonly checkedIdPrefix: string = '__attr__polyfill-pseudoclass-has__';
   readonly rootElementUniqueAttr: string =
     '__root-element__polyfill-pseudoclass-has__';
+  readonly localSelectorToken: string = ':has';
   readonly localSelectors: readonly LocalSelector[];
   readonly transformSelector: string;
   readonly hasLocalSelector: boolean;
@@ -79,7 +80,7 @@ export class SelectorHandler {
     globalSelector: string,
     startPosition = 0
   ): null | LocalSelector {
-    const token = ':has(';
+    const token = `${this.localSelectorToken}(`;
     const ruleStart = globalSelector.indexOf(token, startPosition);
     if (ruleStart === -1) return null;
 
