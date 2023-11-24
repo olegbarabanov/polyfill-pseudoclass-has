@@ -67,7 +67,7 @@ export function callNativeClosest(
   element: Element & ExtElement,
   selector: string
 ): ReturnType<Element['closest']> {
-  return (element[nativeClosestSymbol] ?? element.matches).call(
+  return (element[nativeClosestSymbol] ?? element.closest).call(
     element,
     selector
   );
