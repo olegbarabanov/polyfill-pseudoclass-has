@@ -47,7 +47,7 @@ const polyfill = window['polyfill-pseudoclass-has']; // can also be used via glo
 
     - **`query(scopeNode: Element | Document | DocumentFragment): Element | null`**
 
-      Searches for elements in the scopeNode (which can be an instance of an [Element](https://developer.mozilla.org/docs/Web/API/Element) or a [Document](https://developer.mozilla.org/docs/Web/API/Document) or a [DocumentFragment](https://developer.mozilla.org/docs/Web/API/DocumentFragment)). This is similar to [Node.querySelectorAll()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll).
+      Search for a single element in the scopeNode (which can be an instance of an [Element](https://developer.mozilla.org/docs/Web/API/Element) or a [Document](https://developer.mozilla.org/docs/Web/API/Document) or a [DocumentFragment](https://developer.mozilla.org/docs/Web/API/DocumentFragment)). This is similar to [Node.querySelector()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector).
 
       ```js
       // Example
@@ -57,7 +57,7 @@ const polyfill = window['polyfill-pseudoclass-has']; // can also be used via glo
 
     - **`queryAll(scopeNode: Element | Document | DocumentFragment): NodeListOf<Element>`**  
 
-      Search for a single element in the scopeNode (which can be an instance of an [Element](https://developer.mozilla.org/docs/Web/API/Element) or a [Document](https://developer.mozilla.org/docs/Web/API/Document) or a [DocumentFragment](https://developer.mozilla.org/docs/Web/API/DocumentFragment)). This is similar to [Node.querySelector()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector).
+      Searches for elements in the scopeNode (which can be an instance of an [Element](https://developer.mozilla.org/docs/Web/API/Element) or a [Document](https://developer.mozilla.org/docs/Web/API/Document) or a [DocumentFragment](https://developer.mozilla.org/docs/Web/API/DocumentFragment)). This is similar to [Node.querySelectorAll()](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll).
 
       ```js
       // Example
