@@ -1,11 +1,12 @@
 import {SelectorHandler} from './selector-handler';
 import {
+  selectorHandlerOptionsSymbol,
   nativeClosestSymbol,
   nativeMatchesSymbol,
   nativeQuerySelectorAllSymbol,
   nativeQuerySelectorSymbol,
 } from './symbols';
-import {ExtElement, ExtNode} from './types';
+import {ExtElement, ExtNode, SelectorHandlerOptions} from './types';
 import {isElementNode, isDocumentFragmentNode, isDocumentNode} from './utils';
 
 /**
@@ -32,6 +33,7 @@ export function removeFromBrowser() {
  * @param Element Element - base class
  * @param Document Document - base class
  * @param DocumentFragment DocumentFragment - base class
+ * @param selectorHandlerOptions - Additional options that will be passed to the handler (SelectorHandler) when called
  */
 
 export function addTo(
@@ -46,13 +48,17 @@ export function addTo(
   DocumentFragment: {
     new (...args: unknown[]): DocumentFragment & ExtNode;
     prototype: DocumentFragment & ExtNode;
-  }
+  },
+  selectorHandlerOptions: SelectorHandlerOptions = {}
 ) {
   for (const nodePrototype of [Element, Document, DocumentFragment]) {
     nodePrototype.prototype[nativeQuerySelectorSymbol] =
       nodePrototype.prototype.querySelector;
     nodePrototype.prototype[nativeQuerySelectorAllSymbol] =
       nodePrototype.prototype.querySelectorAll;
+
+    nodePrototype.prototype[selectorHandlerOptionsSymbol] =
+      selectorHandlerOptions;
 
     nodePrototype.prototype.querySelector = function (
       ...params: Parameters<ParentNode['querySelector']>
@@ -65,7 +71,12 @@ export function addTo(
         throw new Error('illegable invoke');
       }
 
-      return new SelectorHandler(...params).query(this);
+      const [selector] = params;
+
+      return new SelectorHandler(
+        selector,
+        this[selectorHandlerOptionsSymbol]
+      ).query(this);
     };
 
     nodePrototype.prototype.querySelectorAll = function (
@@ -79,7 +90,12 @@ export function addTo(
         throw new Error('illegable invoke');
       }
 
-      return new SelectorHandler(...params).queryAll(this);
+      const [selector] = params;
+
+      return new SelectorHandler(
+        selector,
+        this[selectorHandlerOptionsSymbol]
+      ).queryAll(this);
     };
   }
 
@@ -90,14 +106,26 @@ export function addTo(
     ...params: Parameters<Element['closest']>
   ): ReturnType<Element['closest']> {
     if (!isElementNode(this)) throw new Error('illegable invoke');
-    return new SelectorHandler(...params).closest(this);
+
+    const [selector] = params;
+
+    return new SelectorHandler(
+      selector,
+      this[selectorHandlerOptionsSymbol]
+    ).closest(this);
   };
 
   Element.prototype.matches = function (
     ...params: Parameters<Element['matches']>
   ): ReturnType<Element['matches']> {
     if (!isElementNode(this)) throw new Error('illegable invoke');
-    return new SelectorHandler(...params).matches(this);
+
+    const [selector] = params;
+
+    return new SelectorHandler(
+      selector,
+      this[selectorHandlerOptionsSymbol]
+    ).matches(this);
   };
 }
 
@@ -143,5 +171,7 @@ export function removeFrom(
         nodePrototype.prototype[nativeQuerySelectorAllSymbol];
       delete nodePrototype.prototype[nativeQuerySelectorAllSymbol];
     }
+
+    delete nodePrototype.prototype[selectorHandlerOptionsSymbol];
   }
 }

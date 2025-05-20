@@ -4,29 +4,37 @@ import {
   callNativeMatches,
   callNativeClosest,
 } from './native';
-import {LocalSelector, ScopeNode} from './types';
+import {LocalSelector, ScopeNode, SelectorHandlerOptions} from './types';
 import {isElementNode, isDocumentFragmentNode, isDocumentNode} from './utils';
 
 export class SelectorHandler {
-  /**
-   * The name of the element used to nest a group of elements, if needed
-   */
-  readonly blockScopeElementTagName: string = 'polyfill-block-scope-element';
-
-  /**
-   * Prefix of a temporary attribute to be used when the element needs to be modified
-   */
-  readonly checkedIdPrefix: string = '__attr__polyfill-pseudoclass-has__';
-  readonly rootElementUniqueAttr: string =
-    '__root-element__polyfill-pseudoclass-has__';
-  readonly localSelectorToken: string = ':has';
+  readonly blockScopeElementTagName: string;
+  readonly checkedIdPrefix: string;
+  readonly rootElementUniqueAttr: string;
+  readonly localSelectorToken: string;
   readonly localSelectors: readonly LocalSelector[];
   readonly transformSelector: string;
   readonly hasLocalSelector: boolean;
   readonly globalSelector: string;
 
-  constructor(globalSelector: string) {
+  /**
+   * @param globalSelector - CSS selector
+   * @param options - Additional parameters defined in the SelectorHandlerOptions type
+   */
+  constructor(
+    globalSelector: string,
+    {
+      blockScopeElementTagName = 'polyfill-block-scope-element',
+      checkedIdPrefix = '__attr__polyfill-pseudoclass-has__',
+      localSelectorToken = ':has',
+      rootElementUniqueAttr = '__root-element__polyfill-pseudoclass-has__',
+    }: SelectorHandlerOptions = {}
+  ) {
     this.globalSelector = String(globalSelector); // for JS environment
+    this.blockScopeElementTagName = String(blockScopeElementTagName);
+    this.checkedIdPrefix = String(checkedIdPrefix);
+    this.rootElementUniqueAttr = String(rootElementUniqueAttr);
+    this.localSelectorToken = String(localSelectorToken);
     this.localSelectors = Object.freeze(this.getLocalSelectors(globalSelector));
     this.hasLocalSelector = this.localSelectors.length > 0;
     this.transformSelector = this.getTransformSelector();
