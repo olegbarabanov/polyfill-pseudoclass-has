@@ -170,3 +170,22 @@ describe('check closest()', () => {
     expect(result).toBe(rootElementImpl);
   });
 });
+
+describe('check extended options', () => {
+  test('check redefined CSS token (example `:has` => `:_has`)', async () => {
+    const targetElement = rootElementImpl.querySelector('main');
+    if (!targetElement) fail('target element not found');
+
+    const selector1 = 'main:_has(#link-to-top)';
+    const result1 = new SelectorHandler(selector1, {
+      localSelectorToken: ':_has',
+    }).matches(targetElement);
+    expect(result1).toBeTruthy();
+
+    const selector2 = 'main:_has(#unavailable-id)';
+    const result2 = new SelectorHandler(selector2, {
+      localSelectorToken: ':_has',
+    }).matches(targetElement);
+    expect(result2).toBeFalsy();
+  });
+});
