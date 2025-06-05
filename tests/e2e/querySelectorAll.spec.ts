@@ -29,6 +29,7 @@ test.describe('test querySelectorAll() & Document NODE', () => {
           const actual = [
             ...document.querySelectorAll(pattern.replace(':has', ':_has')),
           ];
+
           return (
             expected.length === actual.length &&
             expected.every((item, index) => item === actual[index])

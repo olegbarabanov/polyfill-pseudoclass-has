@@ -12,3 +12,38 @@
 import {expect} from '@playwright/test';
 import {SelectorHandler} from '../../src/';
 import {test} from './global';
+
+test.describe('test matches() with Element', () => {
+  const patterns = [
+    'nav:has(a)',
+    'main:has(#link-to-top):has(#link-to-bottom)',
+  ];
+
+  patterns.forEach(pattern => {
+    test(`test selector with installed polyfill: ${pattern}`, async ({
+      page,
+    }) => {
+      const result = await page.evaluate(
+        ({pattern}) => {
+          const el = document.querySelector(pattern);
+          return el ? el.matches(pattern.replace(':has', ':_has')) : false;
+        },
+        {pattern}
+      );
+      expect(result).toBeTruthy();
+    });
+
+    test(`test selector with separate instance polyfill: ${pattern}`, async ({
+      page,
+    }) => {
+      const result = await page.evaluate(
+        ({pattern}) => {
+          const el = document.querySelector(pattern);
+          return el ? new SelectorHandler(pattern).matches(el) : false;
+        },
+        {pattern}
+      );
+      expect(result).toBeTruthy();
+    });
+  });
+});
