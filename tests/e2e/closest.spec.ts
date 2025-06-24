@@ -32,7 +32,7 @@ test.describe('test closest() with Element', () => {
           const actual = srcElement.closest(
             testSelector.replace(':has', ':_has')
           );
-          return expected === actual;
+          return expected && expected === actual;
         },
         [...selector]
       );
@@ -50,7 +50,7 @@ test.describe('test closest() with Element', () => {
           const expected = srcElement.closest(testSelector);
           const actual = new SelectorHandler(testSelector).closest(srcElement);
 
-          return expected === actual;
+          return expected && expected === actual;
         },
         [...selector]
       );

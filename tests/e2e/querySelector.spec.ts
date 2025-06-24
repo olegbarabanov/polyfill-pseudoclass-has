@@ -29,7 +29,7 @@ test.describe('test querySelector() with Document NODE', () => {
           const actual = document.querySelector(
             pattern.replace(':has', ':_has')
           );
-          return expected === actual;
+          return expected && expected === actual;
         },
         {pattern}
       );
@@ -43,7 +43,7 @@ test.describe('test querySelector() with Document NODE', () => {
         ({pattern}) => {
           const expected = document.querySelector(pattern);
           const actual = new SelectorHandler(pattern).query(document);
-          return expected === actual;
+          return expected && expected === actual;
         },
         {pattern}
       );
@@ -68,7 +68,7 @@ test.describe('test querySelector() & Element', () => {
           const actual = document.body.querySelector(
             pattern.replace(':has', ':_has')
           );
-          return expected === actual;
+          return expected && expected === actual;
         },
         {pattern}
       );
@@ -82,7 +82,7 @@ test.describe('test querySelector() & Element', () => {
         ({pattern}) => {
           const expected = document.querySelector(pattern);
           const actual = new SelectorHandler(pattern).query(document.body);
-          return expected === actual;
+          return expected && expected === actual;
         },
         {pattern}
       );
@@ -109,7 +109,7 @@ test.describe('test querySelector() & DocumentFragment', () => {
           const actual = documentFragment.querySelector(
             pattern.replace(':has', ':_has')
           );
-          return expected === actual;
+          return expected && expected === actual;
         },
         {pattern}
       );
@@ -125,7 +125,7 @@ test.describe('test querySelector() & DocumentFragment', () => {
           documentFragment.append(document.body.cloneNode(true));
           const expected = documentFragment.querySelector(pattern);
           const actual = new SelectorHandler(pattern).query(documentFragment);
-          return expected === actual;
+          return expected && expected === actual;
         },
         {pattern}
       );

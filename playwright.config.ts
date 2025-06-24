@@ -1,38 +1,28 @@
 import {defineConfig, devices} from '@playwright/test';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+const sampleWebServer = {
+  protocol: process.env.SAMPLE_DEV_SERVER_PROTOCOL || 'http',
+  domain: process.env.SAMPLE_DEV_SERVER_DOMAIN || 'localhost',
+  port: process.env.SAMPLE_DEV_SERVER_PORT || '3000',
+  path: process.env.SAMPLE_DEV_SERVER_PATH || '',
+};
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
+const sampleWebServerURI = new URL(
+  `${sampleWebServer.protocol}://${sampleWebServer.domain}:${sampleWebServer.port}${sampleWebServer.path}`
+);
+
 export default defineConfig({
   testDir: './tests/e2e',
-  /* Run tests in files in parallel */
   fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'null',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    baseURL: sampleWebServerURI.toString(),
     trace: 'on-first-retry',
   },
 
-  /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
@@ -48,13 +38,11 @@ export default defineConfig({
       name: 'webkit',
       use: {...devices['Desktop Safari']},
     },
-
   ],
 
-  /* Run your local dev server before starting the tests */
   webServer: {
     command: 'npm run serve',
-    url: 'http://polyfill-pseudoclass-has:3000/tests/samples',
+    url: sampleWebServerURI.toString(),
     reuseExistingServer: !process.env.CI,
     ignoreHTTPSErrors: true,
   },

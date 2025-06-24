@@ -31,6 +31,7 @@ test.describe('test querySelectorAll() & Document NODE', () => {
           ];
 
           return (
+            expected.length > 0 &&
             expected.length === actual.length &&
             expected.every((item, index) => item === actual[index])
           );
@@ -49,6 +50,7 @@ test.describe('test querySelectorAll() & Document NODE', () => {
           const expected = [...document.querySelectorAll(pattern)];
           const actual = [...new SelectorHandler(pattern).queryAll(document)];
           return (
+            expected.length > 0 &&
             expected.length === actual.length &&
             expected.every((item, index) => item === actual[index])
           );
@@ -78,6 +80,7 @@ test.describe('test querySelectorAll() & Element', () => {
             ...document.body.querySelectorAll(pattern.replace(':has', ':_has')),
           ];
           return (
+            expected.length > 0 &&
             expected.length === actual.length &&
             expected.every((item, index) => item === actual[index])
           );
@@ -98,6 +101,7 @@ test.describe('test querySelectorAll() & Element', () => {
             ...new SelectorHandler(pattern).queryAll(document.body),
           ];
           return (
+            expected.length > 0 &&
             expected.length === actual.length &&
             expected.every((item, index) => item === actual[index])
           );
@@ -131,6 +135,7 @@ test.describe('test querySelectorAll() & DocumentFragment', () => {
             ),
           ];
           return (
+            expected.length > 0 &&
             expected.length === actual.length &&
             expected.every((item, index) => item === actual[index])
           );
@@ -152,6 +157,7 @@ test.describe('test querySelectorAll() & DocumentFragment', () => {
             ...new SelectorHandler(pattern).queryAll(documentFragment),
           ];
           return (
+            expected.length > 0 &&
             expected.length === actual.length &&
             expected.every((item, index) => item === actual[index])
           );
