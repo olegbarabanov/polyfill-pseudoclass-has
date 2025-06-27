@@ -1,0 +1,29 @@
+services:
+  nodejs:
+    container_name: polyfill-pseudoclass-has
+    image: node:22-alpine
+    working_dir: /home/node/app
+    user: '1000:1000'
+    restart: 'no'
+    environment:
+      - PW_TEST_CONNECT_WS_ENDPOINT=ws://playwright:3000/
+      - SAMPLE_DEV_SERVER_PROTOCOL=http
+      - SAMPLE_DEV_SERVER_DOMAIN=polyfill-pseudoclass-has
+      - SAMPLE_DEV_SERVER_PORT=3000
+      - SAMPLE_DEV_SERVER_PATH=/
+    volumes:
+      - ./:/home/node/app
+    stdin_open: true
+    tty: true
+
+  playwright:
+    container_name: playwright
+    ports:
+      - '3000:3000'
+    init: true
+    stdin_open: true
+    tty: true
+    working_dir: /home/pwuser
+    user: pwuser
+    image: mcr.microsoft.com/playwright:v1.52.0-noble
+    command: /bin/sh -c "npx -y playwright@1.52.0 run-server --port 3000 --host 0.0.0.0"

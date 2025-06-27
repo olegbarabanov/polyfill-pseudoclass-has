@@ -22,9 +22,11 @@
   "scripts": {
     "clean": "rm -fr dist",
     "build": "npm run clean && tsc --noEmit && vite build",
-    "test": "jest",
+    "test:unit": "jest ./tests/unit",
+    "test:e2e": "npx playwright test",
     "lint": "gts lint",
-    "fix": "gts fix"
+    "fix": "gts fix",
+    "serve": "vite preview --host --port=3000 --outDir=./tests/samples"
   },
   "type": "module",
   "author": {
@@ -44,6 +46,7 @@
     "node": ">=13.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@types/jest": "^28.1.8",
     "@types/jsdom": "^21.1.1",
     "@types/node": "^20.4.5",

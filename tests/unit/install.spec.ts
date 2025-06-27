@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import {JSDOM} from 'jsdom';
 import * as path from 'path';
-import {addTo, removeFrom} from '..';
+import {addTo, removeFrom} from '../../src';
 
 const globalHtml = fs.readFileSync(
-  path.resolve(__dirname, './test.html'),
+  path.resolve(__dirname, '../samples/index.html'),
   'utf8'
 );
 
